@@ -32,12 +32,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: {
           type: "object",
           properties: {
-            title: { type: "string" },
             description: { type: "string" },
-            budget_amount: { type: "string" },
-            tags: { type: "array", items: { type: "string" } },
+            budget_near: { type: "string" },
+            category: { type: "string" },
+            deadline: { type: "string" },
           },
-          required: ["title", "description", "budget_amount"],
+          required: ["description", "budget_near"],
         },
       },
       {
