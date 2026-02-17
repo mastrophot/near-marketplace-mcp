@@ -53,7 +53,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: "accept_deliverable",
+        name: "approve_completion",
         description: "Accept submitted work and release escrowed NEAR",
         inputSchema: {
           type: "object",
@@ -98,7 +98,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
     }
 
-    case "accept_deliverable": {
+    case "approve_completion": {
       const { job_id } = z.object({ job_id: z.string() }).parse(args);
       const response = await fetch(`${MARKET_API_URL}/jobs/${job_id}/accept`, {
         method: "POST",
