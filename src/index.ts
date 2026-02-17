@@ -32,12 +32,13 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: {
           type: "object",
           properties: {
+            title: { type: "string" },
             description: { type: "string" },
-            budget_near: { type: "string" },
-            category: { type: "string" },
-            deadline: { type: "string" },
+            tags: { type: "array", items: { type: "string" } },
+            budget_amount: { type: "string" },
+            deadline_seconds: { type: "number" },
           },
-          required: ["description", "budget_near"],
+          required: ["title", "description"],
         },
       },
       {
@@ -52,16 +53,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: "approve_completion",
-        description: "Approve the completion of a job and release funds",
+        name: "accept_deliverable",
+        description: "Accept submitted work and release escrowed NEAR",
         inputSchema: {
           type: "object",
           properties: {
-            assignment_id: { type: "string" },
+            job_id: { type: "string" },
           },
-          required: ["assignment_id"],
+          required: ["job_id"],
         },
       },
+
     ],
   };
 });
@@ -96,15 +98,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
     }
 
-    case "approve_completion": {
-      const { assignment_id } = z.object({ assignment_id: z.string() }).parse(args);
-      const response = await fetch(`${MARKET_API_URL}/assignments/${assignment_id}/accept`, {
+    case "accept_deliverable": {
+      const { job_id } = z.object({ job_id: z.string() }).parse(args);
+      const response = await fetch(`${MARKET_API_URL}/jobs/${job_id}/accept`, {
         method: "POST",
         headers,
       });
       const data = await response.json();
       return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
     }
+
 
     default:
       throw new Error(`Unknown tool: ${name}`);
